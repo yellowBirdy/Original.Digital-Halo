@@ -4,20 +4,23 @@ var http = require('http')
   , express = require('express')
   , bodyParser = require('body-parser')
   , MongoClient = require('mongodb').MongoClient
-  , assert = require('assert');
+  , childProcess = require('child_process')
+  , assert = require('assert')
+  , website = require('./website')
 
 var pds = express()
-  , mongoUrl = 'mongodb://localhost:27017/dummy-pds';
 
-var userId = 1;
+var website = website(pds, express, MongoClient)
+
+var userId = 1
+  , mongoUrl = 'mongodb://localhost:27017/dummy-pds';
 
 
 // Route handlers  
 
-function saveData (req, res) {
+function handleData (req, res) {
     MongoClient.connect(mongoUrl, function (err, db) {
 	if (err) return console.log ("can't connect to Mongo: "+err)
-//        assert.equal(null,err, 'Unable to connect to mongo: '+ err)
 	console.log("Connected to mongo");
         insertToMongo(db, {userID: userId, url: req.body.sentUrl}, function () {
             db.close()   
@@ -37,27 +40,51 @@ function insertToMongo (db, data, callback)  {
       });
 }
 
-function sendHalo (req, res)  {
-    MongoClient.connect(mongoUrl, function (err,db) {
-        if (err) return console.log ("can't connect to Mongo: "+ err)
-        console.log("Conencted to mongo");
-        readFromMongo (db, {userID: userId}, function (result) {
-//	    res.header('Content-Type', 'application/json');
-	    res.send(result[0]); 
-	    db.close()   
-	})
-    })
+function computeTopic (callback) {
+    var python = childProcess.exec('python ../analysis/compute_halo.py', function (err) {  
+        if (err) return console.log(err)  });
+    python.on('exit', function (code) {
+       console.log('child python process: compute_halo finished with response: '+code);
+       callback();
+    });
 }
 
 function readFromMongo (db, data, callback)  {
-    var collection = db.collection('halo');
-    collection.find(data).toArray( function (err, result)  {
+    var collection = db.collection('topic');
+    collection.find(data, {topic:1, count:1, _id:0}, {sort: '-count'}).toArray( function (err, result)  {
            if (err) return console.log ("can't read from Mongo: "+ err)
            console.log("read succesful for: "+data.userID);
            callback(result)    
        }
     )
 }
+
+function sendHalo (req, res)  {
+    computeTopic(function ( ) {
+      MongoClient.connect(mongoUrl, function (err,db) {
+          if (err) return console.log ("can't connect to Mongo: "+ err)
+          console.log("Conencted to mongo");
+          readFromMongo (db, {userID: userId}, function (result) {
+//            res.header('Content-Type', 'application/json');
+              res.send(result)
+              db.close()   
+          })
+      })
+    })
+}
+
+function showHalo (req, res)  {
+    computeTopic(function ()  {
+      MongoClient.connect(mongoUrl, function (err, db) {	
+	if (err) return console.log("Couldn't conn to Mongo while getting halo"+ err)  
+	readFromMongo (db, {userID: userId}, function (result) {
+//          res.type('html');
+          result.map(function (el, i)  { el.topic = el.topic.split('/').slice(2,4).join('/'); return el})
+          website(res, result); 
+	});
+      });
+    });
+}  
 
 // Register Middleware
 
@@ -66,7 +93,10 @@ pds.use(bodyParser.json());
 
 // Routing
 //
+pds.post("/", handleData)
 pds.get("/", sendHalo);
-pds.post("/", saveData)
+pds.get("/showHalo", showHalo)
+//pds.get("/showHalo", website)
 
 pds.listen(8000)
+console.log('Listening on localhost port 8000')
