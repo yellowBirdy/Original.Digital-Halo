@@ -22,32 +22,32 @@ def get_new_urls (userId=user_id):
     return url_cursor
 
 
-def get_topic (cursor, method= 'dmoz'):
+def get_topic (cursor, user, method= 'dmoz'):
     for item in cursor:
 	if not item.get('url')  : continue
 	url = item['url']
 	topic = db.dmoz.find_one({'url': url})
         
-	if topic: print 'found new topic:'+ topic['topic']+ '\nfor url:'+ url
+	if topic: print 'found new topic:'#+ topic['topic']+ '\nfor url:'+ url
 
 	if not topic:
             url = url.split('/')
 	    for offset in range(1,len(url)-3+1):
-		topic = db.dmoz.find_one({'url': '/'.join(url[:-offset])})
+		topic = db.dmoz.find_one({'url': '/'.join(url[:-offset])+'/'})
 		if topic: 
 
-		    print 'found new topic:'+ topic['topic']+ '\nfor url:'+ '/'.join(url[:-offset])
+		    print 'found new topic:'#+ topic['topic']+ '\nfor url:'+ '/'.join(url[:-offset])
 		    
 	            break
 	
 	if topic:
             topic = topic['topic']#.split('/')
-	    save_topic(topic)
+	    save_topic(topic, user)
 	
 
-def save_topic (topic):
+def save_topic (topic, user):
     try:
-	db.topic.update({'topic': topic, 'userID' : user_id}, {'$inc' : {'count':1} },  upsert=True)
+	db.topic.update({'topic': topic, 'userID' : user}, {'$inc' : {'count':1} },  upsert=True)
     except:
         print( "MonogoDB error while upsert : ", sys.exc_info()[0:2])
     return
@@ -56,6 +56,7 @@ def save_topic (topic):
 ############
 
 db = MongoClient('mongodb://localhost:27017')['dummy-pds']
-	
-get_topic(get_new_urls());
+
+for user in db.users.find():	
+    get_topic(get_new_urls(userId=user['_id']), user['_id']);
 
