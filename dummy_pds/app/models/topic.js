@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
 var schema = mongoose.Schema({
-  userID: Number
+  userID: {type: mongoose.Schema.Types.ObjectId, ref: 'user'}
 , topic : String
 , count : Number  
 },{
