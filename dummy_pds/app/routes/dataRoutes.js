@@ -12,6 +12,7 @@ exports.store = function (req, res)  {
   , title          : req.body.sentTitle
   , thirdPTrackers : req.body.thirdPTrackers
   , firstPTrackers : req.body.firstPTrackers
+  , accessedAt     : req.body.accessedAt
   })
   url.save(function (err)  {
     if (err) return res.status(422).send('Problem saving the url: ', err.message)
