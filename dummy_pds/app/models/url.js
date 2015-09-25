@@ -2,12 +2,12 @@ var mongoose = require('mongoose')
   , annotate = App.middleware('addSystemProperties')
 
 var schema = mongoose.Schema({
-  userID            : {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  url               : String,
-  title             : String,
-  processed         : Boolean,
-  3rdPartyTrackers  : [],
-  1stPartyTrackers  : []
+  userID          : {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  url             : String,
+  title           : String,
+  processed       : Boolean,
+  thirdPTrackers  : [],
+  firstPTrackers  : []
 },{
   collection: 'url'
 })

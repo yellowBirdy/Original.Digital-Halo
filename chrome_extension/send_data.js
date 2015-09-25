@@ -8,8 +8,8 @@ chrome.runtime.onMessage.addListener(function(message,sender, cb) {
       'sentUrl':            message.URL,
       'sentTitle':          message.title,
       'accessedAt':         message.accessedAt,
-      '3rdPartyTrackers':   BAD_XDOMAIN_REQUESTS[sender.tab.id],
-      '1stPartyTrackers':   FISHY_REQUESTS[sender.tab.id]  
+      'thirdPTrackers':   BAD_XDOMAIN_REQUESTS[sender.tab.id],
+      'firstPTrackers':   FISHY_REQUESTS[sender.tab.id]  
     }))
 })
 

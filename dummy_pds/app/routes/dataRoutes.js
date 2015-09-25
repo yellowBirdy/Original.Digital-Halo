@@ -7,11 +7,11 @@ var mongoose = require('mongoose')
 
 exports.store = function (req, res)  {
   var url = new Url({ 
-    userID           : mongoose.Types.ObjectId(req.user.id)                   // Placeholder for user id
-  , url              : req.body.sentUrl
-  , title            : req.body.sentTitle
-  , 3rdPartyTrackers : req.body.3rdPartyTrackers
-  , 1stPartyTrackers : req.body.1stPartyTrackers
+    userID         : mongoose.Types.ObjectId(req.user.id)                   // Placeholder for user id
+  , url            : req.body.sentUrl
+  , title          : req.body.sentTitle
+  , thirdPTrackers : req.body.thirdPTrackers
+  , firstPTrackers : req.body.firstPTrackers
   })
   url.save(function (err)  {
     if (err) return res.status(422).send('Problem saving the url: ', err.message)
