@@ -11,11 +11,6 @@ chrome.runtime.onMessage.addListener(function(message,sender, cb) {
       '3rdPartyTrackers':   BAD_XDOMAIN_REQUESTS[sender.tab.id],
       '1stPartyTrackers':   FISHY_REQUESTS[sender.tab.id]  
     }))
-
-  
-    alert(JSON.stringify(BAD_XDOMAIN_REQUESTS[sender.tab.id], null, 4) + '\n' + FISHY_REQUESTS[sender.tab.id])
-  }, 2000)
-
 })
 
 
