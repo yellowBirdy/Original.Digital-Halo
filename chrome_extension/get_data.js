@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('load', function () {
 
 //  alert('conent script on DOMContentLoaded '  + document.title)
 

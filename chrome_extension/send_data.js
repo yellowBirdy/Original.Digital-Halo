@@ -1,15 +1,21 @@
 
-
-
 chrome.runtime.onMessage.addListener(function(message,sender, cb) {
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", 'http://dev.sensible.dtu.dk:9090/', true)
-  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-  xhr.send(JSON.stringify({
-    'sentUrl':    message.URL,
-    'sentTitle':  message.title,
-    'accessedAt': message.accessedAt
-  }))
+  setTimeout(function () {  
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", 'http://dev.sensible.dtu.dk:9090/', true)
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+    xhr.send(JSON.stringify({
+      'sentUrl':            message.URL,
+      'sentTitle':          message.title,
+      'accessedAt':         message.accessedAt,
+      '3rdPartyTrackers':   BAD_XDOMAIN_REQUESTS[sender.tab.id],
+      '1stPartyTrackers':   FISHY_REQUESTS[sender.tab.id]  
+    }))
+
+  
+    alert(JSON.stringify(BAD_XDOMAIN_REQUESTS[sender.tab.id], null, 4) + '\n' + FISHY_REQUESTS[sender.tab.id])
+  }, 2000)
+
 })
 
 
