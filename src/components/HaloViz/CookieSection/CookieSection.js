@@ -14,7 +14,7 @@ const companyList   = JSON.parse(window.localStorage.getItem('companyList'));
 
 const CookieSection = ({title, onClick}) => (
     <section id='cookie-section'>
-        <Header textAlign="center" as="h2">{title}</Header>
+        <Header textAlign="center" as="h2" style={{"white-space": "pre"}}>{title}</Header>
         <CookiesChart onClick={onClick} trackerCounts={trackerCounts}
                       trackerList={trackerList} companyList={companyList} />
     </section>

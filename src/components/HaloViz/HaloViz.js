@@ -19,7 +19,7 @@ class HaloViz extends Component {
 
 
     render() {
-        let cookieSectionTitle = `Who is watching you? (${this.state.activeTracker})`;
+        let cookieSectionTitle = `Who is watching you?\n(${this.state.activeTracker})`;
         let demographicSectionTitle = `Who does ${this.state.activeTracker} think you are?`;
         return (
              <Container as="main" style={{ marginTop: '2em', minWidth: '420px'}} >
