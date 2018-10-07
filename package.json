@@ -1,0 +1,28 @@
+{
+  "name": "Halo-justPage",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "enzyme": "^2.7.1",
+    "react-addons-test-utils": "^15.3.2",
+    "react-scripts": "0.7.0"
+  },
+  "dependencies": {
+    "d3": "^3.5.16",
+    "deepcopy": "^0.6.3",
+    "localforage": "^1.4.2",
+    "lodash": "^4.17.4",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-faux-dom": "^3.0.0",
+    "react-responsive": "^4.0.3",
+    "semantic-ui-css": "^2.3.3",
+    "semantic-ui-react": "^0.82.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
